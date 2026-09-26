@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="新聞剪輯資料庫｜Google Drive 新聞剪輯瀏覽、搜尋與索引系統" />
+  <meta name="theme-color" content="#2563eb" />
+  <title>新聞剪輯資料庫</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #f5f7fb;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+    }
+
+    .app {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #f5f7fb;
+    }
+
+    .loading {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: #f5f7fb;
+      color: #344054;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .loading.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 5px solid #dbeafe;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .loading-note {
+      font-size: 0.9rem;
+      color: #667085;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #ffffff;
+    }
+
+    .fallback {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 20;
+    }
+
+    .fallback a {
+      display: inline-block;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, 0.82);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .fallback a:hover {
+      background: rgba(17, 24, 39, 0.95);
+    }
+
+    @media (max-width: 640px) {
+      .fallback {
+        right: 8px;
+        bottom: 8px;
+      }
+
+      .fallback a {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div id="loading" class="loading" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loading-title">正在載入新聞剪輯資料庫</div>
+      <div class="loading-note">資料會自動同步 Google Drive 最新索引</div>
+    </div>
+
+    <iframe
+      id="newsApp"
+      title="新聞剪輯資料庫"
+      src="https://script.google.com/macros/s/AKfycbx7JskPBUaCtrpztrxVXCrp-CZnVdcCHsi4Dwy5cbgjYUZbDVbHSOwGhbM0SJcKcis1cA/exec"
+      loading="eager"
+      allow="fullscreen"
+      referrerpolicy="strict-origin-when-cross-origin">
+    </iframe>
+
+    <div class="fallback">
+      <a
+        href="https://script.google.com/macros/s/AKfycbx7JskPBUaCtrpztrxVXCrp-CZnVdcCHsi4Dwy5cbgjYUZbDVbHSOwGhbM0SJcKcis1cA/exec"
+        target="_blank"
+        rel="noopener noreferrer">
+        ↗ 直接開啟
+      </a>
+    </div>
+  </main>
+
+  <script>
+    const iframe = document.getElementById("newsApp");
+    const loading = document.getElementById("loading");
+
+    iframe.addEventListener("load", () => {
+      window.setTimeout(() => {
+        loading.classList.add("hidden");
+      }, 300);
+    });
+  </script>
+</body>
+</html>
