@@ -3,161 +3,1029 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="新聞剪輯資料庫｜Google Drive 新聞剪輯瀏覽、搜尋與索引系統" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="description" content="新聞剪輯資料庫：瀏覽、搜尋與索引 Google Drive 新聞剪輯。" />
+  <meta name="theme-color" content="#1d4ed8" />
   <title>新聞剪輯資料庫</title>
 
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #e4e7ec;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --success-soft: #ecfdf3;
+      --success: #027a48;
+      --warning-soft: #fffaeb;
+      --warning: #b54708;
+      --shadow: 0 8px 28px rgba(16, 24, 40, 0.07);
+      --radius: 18px;
+      --font-scale: 1;
     }
 
-    html,
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: calc(16px * var(--font-scale));
+    }
+
     body {
       margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #f5f7fb;
-      font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(37,99,235,.08), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
+
+    button, input, select { font: inherit; }
 
     .app {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: #f5f7fb;
+      width: min(1480px, 100%);
+      margin: 0 auto;
+      padding: 20px;
     }
 
-    .loading {
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      border-radius: 26px;
+      color: #fff;
+      background: linear-gradient(135deg, #0f3f73, #2563eb 56%, #4f46e5);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
       position: absolute;
-      inset: 0;
-      z-index: 10;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      right: -90px;
+      top: -110px;
+      background: rgba(255,255,255,.10);
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: .02em;
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 900px;
+      line-height: 1.75;
+      opacity: .92;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 3px 14px rgba(16,24,40,.04);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: #1d2939;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(300px, 2.2fr) repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      padding: 14px;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(228,231,236,.95);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid #d0d5dd;
+      border-radius: 11px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .controls {
+      margin: 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .result-count {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 8px 12px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .btn:hover { border-color: #98a2b3; }
+
+    .btn.active,
+    .btn.primary {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .system-line {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 10px 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    .notice, .loading, .error, .empty {
+      padding: 28px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      text-align: center;
+      box-shadow: var(--shadow);
+      line-height: 1.8;
+    }
+
+    .error {
+      border-color: #fecdca;
+      background: #fff7f6;
+      color: #b42318;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid.list { grid-template-columns: 1fr; }
+
+    .card {
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      background: #f5f7fb;
-      color: #344054;
-      transition: opacity 0.25s ease, visibility 0.25s ease;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 4px 18px rgba(16,24,40,.055);
+      transition: transform .18s ease, box-shadow .18s ease;
     }
 
-    .loading.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(16,24,40,.10);
     }
 
-    .spinner {
-      width: 44px;
-      height: 44px;
-      border: 5px solid #dbeafe;
-      border-top-color: #2563eb;
-      border-radius: 50%;
-      animation: spin 0.85s linear infinite;
+    .grid.list .card {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+    .thumb-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      background: #edf2f7;
     }
 
-    .loading-title {
-      font-size: 1.15rem;
-      font-weight: 700;
+    .grid.list .thumb-wrap {
+      height: 100%;
+      min-height: 180px;
+      aspect-ratio: auto;
     }
 
-    .loading-note {
-      font-size: 0.9rem;
-      color: #667085;
-    }
-
-    iframe {
-      display: block;
+    .thumb {
       width: 100%;
       height: 100%;
-      border: 0;
-      background: #ffffff;
+      object-fit: cover;
+      display: block;
     }
 
-    .fallback {
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      z-index: 20;
+    .fallback-thumb {
+      width: 100%;
+      height: 100%;
+      min-height: 150px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #eef4ff, #f5f3ff);
+      font-size: 3rem;
     }
 
-    .fallback a {
-      display: inline-block;
-      padding: 9px 13px;
+    .content {
+      padding: 16px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .meta {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
       border-radius: 999px;
-      background: rgba(17, 24, 39, 0.82);
-      color: #ffffff;
+      background: var(--primary-soft);
+      color: #174ea6;
+      font-size: .72rem;
+      font-weight: 900;
+    }
+
+    .badge.category {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .badge.ext {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .card h2 {
+      margin: 0 0 9px;
+      font-size: 1.06rem;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .summary {
+      color: #475467;
+      font-size: .9rem;
+      line-height: 1.7;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .keywords {
+      margin-bottom: 9px;
+      color: #475467;
+      font-size: .82rem;
+      line-height: 1.6;
+    }
+
+    .path {
+      margin-bottom: 12px;
+      color: #98a2b3;
+      font-size: .73rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .card-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      background: #fff;
       text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 700;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      font-size: .82rem;
+      font-weight: 900;
     }
 
-    .fallback a:hover {
-      background: rgba(17, 24, 39, 0.95);
+    .link-btn.primary {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
     }
 
-    @media (max-width: 640px) {
-      .fallback {
-        right: 8px;
-        bottom: 8px;
-      }
+    mark {
+      background: #fff1a8;
+      border-radius: 3px;
+      padding: 0 .08em;
+    }
 
-      .fallback a {
-        padding: 8px 10px;
-        font-size: 0.75rem;
+    .pager {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin: 22px 0 6px;
+    }
+
+    .page-btn {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .page-btn.active {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .footer {
+      padding: 26px 0 10px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    @media (max-width: 1200px) {
+      .toolbar { grid-template-columns: 2fr 1fr 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .app { padding: 12px; }
+      .hero { padding: 22px; border-radius: 20px; }
+      .toolbar {
+        position: static;
+        grid-template-columns: 1fr 1fr;
       }
+      .search-field { grid-column: 1 / -1; }
+      .grid { grid-template-columns: 1fr; }
+      .grid.list .card { grid-template-columns: 1fr; }
+      .grid.list .thumb-wrap {
+        min-height: 0;
+        aspect-ratio: 16/9;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .toolbar { grid-template-columns: 1fr; }
+      .search-field { grid-column: auto; }
     }
   </style>
 </head>
 
 <body>
   <main class="app">
-    <div id="loading" class="loading" role="status" aria-live="polite">
-      <div class="spinner" aria-hidden="true"></div>
-      <div class="loading-title">正在載入新聞剪輯資料庫</div>
-      <div class="loading-note">資料會自動同步 Google Drive 最新索引</div>
+    <header class="hero">
+      <h1>📰 新聞剪輯資料庫</h1>
+      <p>公開瀏覽、搜尋與索引新聞剪輯。資料來源由 Google Drive 維護，索引透過 Google 試算表同步更新。</p>
+    </header>
+
+    <section class="stats" aria-label="統計資訊">
+      <div class="stat-card">
+        <div class="stat-label">全部新聞</div>
+        <div class="stat-value" id="totalStat">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">今年新聞</div>
+        <div class="stat-value" id="yearStat">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">本月新聞</div>
+        <div class="stat-value" id="monthStat">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">目前篩選結果</div>
+        <div class="stat-value" id="filteredStat">—</div>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="搜尋與篩選">
+      <div class="field search-field">
+        <label for="q">關鍵字搜尋</label>
+        <input id="q" type="search" placeholder="搜尋標題、來源、分類、關鍵字、摘要…" autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label for="year">年份</label>
+        <select id="year"><option value="">全部年份</option></select>
+      </div>
+
+      <div class="field">
+        <label for="month">月份</label>
+        <select id="month">
+          <option value="">全部月份</option>
+          <option value="01">1 月</option><option value="02">2 月</option>
+          <option value="03">3 月</option><option value="04">4 月</option>
+          <option value="05">5 月</option><option value="06">6 月</option>
+          <option value="07">7 月</option><option value="08">8 月</option>
+          <option value="09">9 月</option><option value="10">10 月</option>
+          <option value="11">11 月</option><option value="12">12 月</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="source">新聞來源</label>
+        <select id="source"><option value="">全部來源</option></select>
+      </div>
+
+      <div class="field">
+        <label for="category">分類</label>
+        <select id="category"><option value="">全部分類</option></select>
+      </div>
+
+      <div class="field">
+        <label for="extension">檔案類型</label>
+        <select id="extension"><option value="">全部類型</option></select>
+      </div>
+    </section>
+
+    <div class="controls">
+      <div id="resultCount" class="result-count">正在載入…</div>
+      <div class="btn-group">
+        <button id="resetBtn" class="btn">清除篩選</button>
+        <button id="gridBtn" class="btn active">▦ 卡片</button>
+        <button id="listBtn" class="btn">☰ 列表</button>
+        <button id="fontBtn" class="btn">A+ 字體</button>
+      </div>
     </div>
 
-    <iframe
-      id="newsApp"
-      title="新聞剪輯資料庫"
-      src="https://script.google.com/macros/s/AKfycbx7JskPBUaCtrpztrxVXCrp-CZnVdcCHsi4Dwy5cbgjYUZbDVbHSOwGhbM0SJcKcis1cA/exec"
-      loading="eager"
-      allow="fullscreen"
-      referrerpolicy="strict-origin-when-cross-origin">
-    </iframe>
-
-    <div class="fallback">
-      <a
-        href="https://script.google.com/macros/s/AKfycbx7JskPBUaCtrpztrxVXCrp-CZnVdcCHsi4Dwy5cbgjYUZbDVbHSOwGhbM0SJcKcis1cA/exec"
-        target="_blank"
-        rel="noopener noreferrer">
-        ↗ 直接開啟
-      </a>
+    <div class="system-line">
+      <span id="dataStatus">資料來源：Google Sheet 公開索引</span>
+      <span>排序：新聞日期新 → 舊</span>
     </div>
+
+    <div id="loading" class="loading">正在讀取新聞索引，請稍候…</div>
+    <div id="error" class="error" hidden></div>
+    <section id="results" class="grid" hidden></section>
+    <nav id="pager" class="pager" aria-label="分頁"></nav>
+
+    <footer class="footer">
+      新聞剪輯資料庫 · V1.5 Public · GitHub Pages + Google Sheets
+    </footer>
   </main>
 
   <script>
-    const iframe = document.getElementById("newsApp");
-    const loading = document.getElementById("loading");
+    /*
+     * V1.5 Public
+     * ------------------------------------------------
+     * 不使用 iframe，不依賴 GAS Web App 前端。
+     * GitHub Pages 直接讀取「公開可檢視」的 Google Sheet。
+     *
+     * Google Sheet ID：
+     * 1ssLUJCpBhTR7Xso_sRKvlq0gwcTV2rL9nE1K7hQxCZA
+     *
+     * 工作表名稱：
+     * 新聞索引
+     */
 
-    iframe.addEventListener("load", () => {
-      window.setTimeout(() => {
-        loading.classList.add("hidden");
-      }, 300);
+    const CONFIG = {
+      spreadsheetId: "1ssLUJCpBhTR7Xso_sRKvlq0gwcTV2rL9nE1K7hQxCZA",
+      sheetName: "新聞索引",
+      pageSize: 24
+    };
+
+    const state = {
+      all: [],
+      filtered: [],
+      page: 1,
+      view: "grid",
+      fontLarge: false
+    };
+
+    const $ = id => document.getElementById(id);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      bindEvents();
+      loadGoogleSheet();
     });
+
+    function loadGoogleSheet() {
+      /*
+       * Google Visualization Query 使用 JSONP responseHandler，
+       * 避免 GitHub Pages 跨網域 fetch 的 CORS 問題。
+       */
+      const callbackName = "handleNewsSheet";
+      const tqx = encodeURIComponent(`out:json;responseHandler:${callbackName}`);
+      const sheet = encodeURIComponent(CONFIG.sheetName);
+      const url =
+        `https://docs.google.com/spreadsheets/d/${CONFIG.spreadsheetId}` +
+        `/gviz/tq?sheet=${sheet}&tqx=${tqx}`;
+
+      const script = document.createElement("script");
+      script.src = url;
+      script.async = true;
+
+      script.onerror = () => {
+        showError(
+          "無法讀取 Google Sheet。請確認索引試算表已設定為「知道連結的任何人皆可檢視」，" +
+          "或已透過「檔案 → 共用 → 發布到網路」公開。"
+        );
+      };
+
+      document.head.appendChild(script);
+
+      window.setTimeout(() => {
+        if (!state.all.length && !$("error").hidden) return;
+        if (!state.all.length && !$("loading").hidden) {
+          showError(
+            "資料讀取逾時。請檢查 Google Sheet 的公開權限，並確認工作表名稱仍為「新聞索引」。"
+          );
+        }
+      }, 12000);
+    }
+
+    /*
+     * Google Visualization API JSONP callback
+     */
+    window.handleNewsSheet = function(response) {
+      try {
+        if (!response || response.status === "error" || !response.table) {
+          const msg =
+            response?.errors?.map(e => e.detailed_message || e.message).join("；") ||
+            "Google Sheet 回傳格式錯誤。";
+          throw new Error(msg);
+        }
+
+        const cols = response.table.cols || [];
+        const rows = response.table.rows || [];
+
+        const headers = cols.map((c, i) => normalizeHeader(c.label || c.id || `C${i}`));
+
+        const items = rows.map(row => {
+          const obj = {};
+          const cells = row.c || [];
+
+          headers.forEach((header, i) => {
+            const cell = cells[i];
+            if (!cell) {
+              obj[header] = "";
+              return;
+            }
+            obj[header] = cell.f ?? cell.v ?? "";
+          });
+
+          return mapRow(obj);
+        })
+        .filter(item => item.id && item.status !== "inactive");
+
+        state.all = items.sort((a, b) => dateValue(b.newsDate || b.modified) - dateValue(a.newsDate || a.modified));
+
+        $("loading").hidden = true;
+        $("results").hidden = false;
+
+        populateFacets();
+        updateTopStats();
+        applyFilters();
+
+        $("dataStatus").textContent =
+          `資料來源：Google Sheet 公開索引 · 已載入 ${state.all.length.toLocaleString("zh-TW")} 筆`;
+      } catch (err) {
+        showError("索引資料解析失敗：" + (err?.message || err));
+      }
+    };
+
+    function normalizeHeader(value) {
+      return String(value || "").trim();
+    }
+
+    function mapRow(r) {
+      return {
+        id: str(r["FileID"]),
+        title: str(r["標題"] || r["檔名"]),
+        fileName: str(r["檔名"]),
+        newsDate: normalizeDate(r["新聞日期"]),
+        source: str(r["新聞來源"]),
+        category: str(r["分類"]),
+        keywords: str(r["關鍵字"]),
+        summary: str(r["摘要"]),
+        mime: str(r["MIME Type"]),
+        extension: str(r["副檔名"]).toUpperCase(),
+        url: str(r["Drive URL"]),
+        previewUrl: str(r["Preview URL"]),
+        thumbnailUrl: str(r["Thumbnail URL"]),
+        created: normalizeDateTime(r["建立時間"]),
+        modified: normalizeDateTime(r["修改時間"]),
+        folderPath: str(r["資料夾路徑"]),
+        size: Number(r["檔案大小"] || 0),
+        status: str(r["狀態"]).toLowerCase()
+      };
+    }
+
+    function bindEvents() {
+      ["q", "year", "month", "source", "category", "extension"].forEach(id => {
+        $(id).addEventListener(id === "q" ? "input" : "change", debounce(() => {
+          state.page = 1;
+          applyFilters();
+        }, id === "q" ? 180 : 0));
+      });
+
+      $("resetBtn").addEventListener("click", () => {
+        ["q", "year", "month", "source", "category", "extension"].forEach(id => $(id).value = "");
+        state.page = 1;
+        applyFilters();
+      });
+
+      $("gridBtn").addEventListener("click", () => setView("grid"));
+      $("listBtn").addEventListener("click", () => setView("list"));
+
+      $("fontBtn").addEventListener("click", () => {
+        state.fontLarge = !state.fontLarge;
+        document.documentElement.style.setProperty("--font-scale", state.fontLarge ? "1.12" : "1");
+        $("fontBtn").classList.toggle("active", state.fontLarge);
+      });
+    }
+
+    function populateFacets() {
+      const years = uniq(state.all.map(i => i.newsDate.slice(0, 4)).filter(Boolean))
+        .sort((a,b) => b.localeCompare(a));
+      const sources = uniq(state.all.map(i => i.source).filter(Boolean))
+        .sort((a,b) => a.localeCompare(b, "zh-Hant"));
+      const categories = uniq(state.all.map(i => i.category).filter(Boolean))
+        .sort((a,b) => a.localeCompare(b, "zh-Hant"));
+      const extensions = uniq(state.all.map(i => i.extension).filter(Boolean)).sort();
+
+      fillSelect("year", years);
+      fillSelect("source", sources);
+      fillSelect("category", categories);
+      fillSelect("extension", extensions);
+    }
+
+    function fillSelect(id, values) {
+      const select = $(id);
+      values.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v;
+        option.textContent = v;
+        select.appendChild(option);
+      });
+    }
+
+    function updateTopStats() {
+      const now = new Date();
+      const currentYear = String(now.getFullYear());
+      const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
+
+      const yearCount = state.all.filter(i => i.newsDate.startsWith(currentYear)).length;
+      const monthCount = state.all.filter(i => i.newsDate.startsWith(`${currentYear}-${currentMonth}`)).length;
+
+      $("totalStat").textContent = state.all.length.toLocaleString("zh-TW");
+      $("yearStat").textContent = yearCount.toLocaleString("zh-TW");
+      $("monthStat").textContent = monthCount.toLocaleString("zh-TW");
+    }
+
+    function applyFilters() {
+      const q = normalize($("q").value);
+      const year = $("year").value;
+      const month = $("month").value;
+      const source = $("source").value;
+      const category = $("category").value;
+      const extension = $("extension").value;
+
+      state.filtered = state.all.filter(item => {
+        if (year && !item.newsDate.startsWith(year)) return false;
+        if (month && item.newsDate.slice(5, 7) !== month) return false;
+        if (source && item.source !== source) return false;
+        if (category && item.category !== category) return false;
+        if (extension && item.extension !== extension) return false;
+
+        if (q) {
+          const haystack = normalize([
+            item.title,
+            item.fileName,
+            item.newsDate,
+            item.source,
+            item.category,
+            item.keywords,
+            item.summary,
+            item.folderPath,
+            item.extension
+          ].join(" "));
+
+          const terms = q.split(/\s+/).filter(Boolean);
+          if (!terms.every(term => haystack.includes(term))) return false;
+        }
+
+        return true;
+      });
+
+      $("filteredStat").textContent = state.filtered.length.toLocaleString("zh-TW");
+      render();
+    }
+
+    function render() {
+      const total = state.filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / CONFIG.pageSize));
+      if (state.page > totalPages) state.page = totalPages;
+
+      $("resultCount").textContent =
+        `找到 ${total.toLocaleString("zh-TW")} 筆新聞`;
+
+      if (!total) {
+        $("results").innerHTML = `<div class="empty">找不到符合條件的新聞，請調整搜尋字詞或篩選條件。</div>`;
+        $("pager").innerHTML = "";
+        return;
+      }
+
+      const start = (state.page - 1) * CONFIG.pageSize;
+      const pageItems = state.filtered.slice(start, start + CONFIG.pageSize);
+      const q = $("q").value.trim();
+
+      $("results").innerHTML = pageItems.map(item => cardHtml(item, q)).join("");
+      renderPager(totalPages);
+    }
+
+    function cardHtml(item, q) {
+      const title = highlight(escapeHtml(item.title || item.fileName), q);
+      const summary = item.summary
+        ? highlight(escapeHtml(item.summary), q)
+        : "尚未建立摘要，可由管理者在 Google Sheet 的「摘要」欄補充。";
+
+      const thumb = safeUrl(item.thumbnailUrl);
+      const preview = safeUrl(item.previewUrl);
+      const url = safeUrl(item.url);
+
+      return `
+        <article class="card">
+          <div class="thumb-wrap">
+            ${thumb ? `
+              <img class="thumb"
+                   src="${escapeAttr(thumb)}"
+                   alt=""
+                   loading="lazy"
+                   referrerpolicy="no-referrer"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            ` : ""}
+            <div class="fallback-thumb" style="${thumb ? "" : "display:flex"}">📰</div>
+          </div>
+
+          <div class="content">
+            <div class="meta">
+              ${item.newsDate ? `<span>📅 ${escapeHtml(item.newsDate)}</span>` : ""}
+              ${item.source ? `<span class="badge">${escapeHtml(item.source)}</span>` : ""}
+              ${item.category ? `<span class="badge category">${escapeHtml(item.category)}</span>` : ""}
+              ${item.extension ? `<span class="badge ext">${escapeHtml(item.extension)}</span>` : ""}
+            </div>
+
+            <h2>${title}</h2>
+
+            <div class="summary">${summary}</div>
+
+            ${item.keywords
+              ? `<div class="keywords">🏷️ ${highlight(escapeHtml(item.keywords), q)}</div>`
+              : ""}
+
+            ${item.folderPath
+              ? `<div class="path">📁 ${escapeHtml(item.folderPath)}</div>`
+              : ""}
+
+            <div class="card-actions">
+              ${preview
+                ? `<a class="link-btn primary" href="${escapeAttr(preview)}" target="_blank" rel="noopener noreferrer">預覽</a>`
+                : ""}
+              ${url
+                ? `<a class="link-btn" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">開啟原始檔</a>`
+                : ""}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderPager(totalPages) {
+      const holder = $("pager");
+
+      if (totalPages <= 1) {
+        holder.innerHTML = "";
+        return;
+      }
+
+      const pieces = [];
+
+      function button(label, page, disabled = false, active = false) {
+        pieces.push(`
+          <button class="page-btn ${active ? "active" : ""}"
+                  ${disabled ? "disabled" : ""}
+                  data-page="${page}">
+            ${label}
+          </button>
+        `);
+      }
+
+      button("‹", state.page - 1, state.page <= 1);
+
+      let start = Math.max(1, state.page - 2);
+      let end = Math.min(totalPages, start + 4);
+      start = Math.max(1, end - 4);
+
+      if (start > 1) button("1", 1, false, state.page === 1);
+      if (start > 2) pieces.push("<span>…</span>");
+
+      for (let p = start; p <= end; p++) {
+        button(String(p), p, false, p === state.page);
+      }
+
+      if (end < totalPages - 1) pieces.push("<span>…</span>");
+      if (end < totalPages) button(String(totalPages), totalPages, false, state.page === totalPages);
+
+      button("›", state.page + 1, state.page >= totalPages);
+
+      holder.innerHTML = pieces.join("");
+
+      holder.querySelectorAll("[data-page]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const page = Number(btn.dataset.page);
+          if (!page || page < 1 || page > totalPages) return;
+          state.page = page;
+          render();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+    }
+
+    function setView(view) {
+      state.view = view;
+      $("results").classList.toggle("list", view === "list");
+      $("gridBtn").classList.toggle("active", view === "grid");
+      $("listBtn").classList.toggle("active", view === "list");
+    }
+
+    function normalizeDate(value) {
+      if (!value) return "";
+
+      let s = String(value).trim();
+
+      // Google Visualization Date(...) 格式
+      let m = s.match(/^Date\((\d+),(\d+),(\d+)/);
+      if (m) {
+        return `${m[1]}-${String(Number(m[2]) + 1).padStart(2,"0")}-${String(m[3]).padStart(2,"0")}`;
+      }
+
+      // yyyy/mm/dd or yyyy-mm-dd
+      m = s.match(/(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})/);
+      if (m) {
+        return `${m[1]}-${String(m[2]).padStart(2,"0")}-${String(m[3]).padStart(2,"0")}`;
+      }
+
+      return s;
+    }
+
+    function normalizeDateTime(value) {
+      return String(value || "").trim();
+    }
+
+    function dateValue(value) {
+      if (!value) return 0;
+      const d = new Date(String(value).replace(/\//g, "-"));
+      return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+    }
+
+    function safeUrl(value) {
+      const s = String(value || "").trim();
+      if (!s) return "";
+      try {
+        const u = new URL(s);
+        return ["https:", "http:"].includes(u.protocol) ? u.href : "";
+      } catch {
+        return "";
+      }
+    }
+
+    function uniq(values) {
+      return [...new Set(values)];
+    }
+
+    function str(value) {
+      return value == null ? "" : String(value).trim();
+    }
+
+    function normalize(value) {
+      return String(value || "").toLowerCase().normalize("NFKC").trim();
+    }
+
+    function highlight(safeText, rawQuery) {
+      const terms = normalize(rawQuery).split(/\s+/).filter(Boolean);
+      if (!terms.length) return safeText;
+
+      let result = safeText;
+      terms
+        .sort((a,b) => b.length - a.length)
+        .forEach(term => {
+          const re = new RegExp(escapeRegExp(term), "gi");
+          result = result.replace(re, m => `<mark>${m}</mark>`);
+        });
+
+      return result;
+    }
+
+    function escapeRegExp(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    function debounce(fn, wait) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), wait);
+      };
+    }
+
+    function showError(message) {
+      $("loading").hidden = true;
+      $("results").hidden = true;
+      $("error").hidden = false;
+      $("error").innerHTML =
+        `<strong>無法載入新聞資料</strong><br>${escapeHtml(message)}`;
+    }
   </script>
 </body>
 </html>
